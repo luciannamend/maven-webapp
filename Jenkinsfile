@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         MAVEN_HOME = "C:/Program Files/apache-maven-3.9.9" 
-        JAVA_HOME = "C:/Program Files/Common Files/Oracle/Java/javapath/java.exe" 
+        JAVA_HOME = "C:\Program Files\Eclipse Foundation\jdk-8.0.302.8-hotspot" 
     }
 
     stages {
