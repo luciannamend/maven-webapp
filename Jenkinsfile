@@ -42,7 +42,7 @@ pipeline {
 
         stage('Docker Push Image') {
             steps {
-                bat 'docker push $DOCKER_IMAGE'
+                bat 'docker push %DOCKER_IMAGE%'
             }
         }      
     }
