@@ -19,7 +19,8 @@ pipeline {
             steps {
                 script {
                     echo "Building the Maven project..."
-                    bat "mvn clean install"
+            	    bat "mvn clean package"
+            	    bat "dir target"
                 }
             }
         }
