@@ -3,42 +3,48 @@ pipeline {
 
     environment {
         MAVEN_HOME = "C:/Program Files/apache-maven-3.9.9" 
-        JAVA_HOME = "C:/Program Files/Eclipse Foundation/jdk-8.0.302.8-hotspot" 
+        JAVA_HOME = "C:/Program Files/Java/jdk-17" 
+        DOCKER_IMAGE = "luciannamend/maven-webapp"
     }
 
     stages {
         stage('Checkout Code') {
             steps {
                 git 'https://github.com/luciannamend/maven-webapp.git' 
+		        bat 'git pull origin master'
             }
         }
 
-        stage('Build') {
+        stage('Build Maven Project') {
             steps {
                 script {
                     echo "Building the Maven project..."
-                    bat "mvn clean install"
+            	    bat "mvn clean package"
+            	    bat "dir target"
                 }
             }
         }
 
-        stage('Test') {
+        stage('Docker Login') {
             steps {
-                script {
-                    echo "Running tests..."
-                    bat "mvn test"
-                }
+                withCredentials([string(credentialsId: 'DOCKER_USER', variable: 'DOCKER_USER'), string(credentialsId: 'DOCKER_PWD', variable: 'DOCKER_PWD')]) {
+    		    bat 'docker login -u %DOCKER_USER% -p %DOCKER_PWD%'
+		}                
             }
         }
 
-        stage('Package') {
+        stage('Docker Build Image') {
             steps {
-                script {
-                    echo "Packaging the application..."
-                    bat "mvn package"
-                }
+                bat 'docker build -t %DOCKER_IMAGE% .'
             }
-        }        
+        }
+
+
+        stage('Docker Push Image') {
+            steps {
+                bat 'docker push $DOCKER_IMAGE'
+            }
+        }      
     }
 
     post {
